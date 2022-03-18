@@ -1,0 +1,36 @@
+.commenting-area {
+  display: grid;
+  gap: 1rem;
+  margin-top: 2rem;
+  &--comment {
+    grid-template-columns: min-content 1fr min-content;
+  }
+  &--edit {
+    display: flex;
+    flex-direction: column;
+    .btn {
+      align-self: flex-end;
+    }
+  }
+
+  &__img {
+    align-self: flex-start;
+    width: 4.5rem;
+  }
+
+  &__commenting-box {
+    padding: 2rem 1rem 6rem;
+    border-radius: 0.8rem;
+    border: 0.1rem solid rgba(0, 0, 0, 0.295);
+    resize: none;
+    font-size: 1.6rem;
+    font-family: "Rubik", sans-serif;
+
+    &::placeholder {
+      font-size: 1.6rem;
+    }
+    &:focus {
+      outline: none;
+    }
+  }
+}

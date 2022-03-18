@@ -1,0 +1,5 @@
+<app-comment-shell [commentItem]="currentComment"></app-comment-shell>
+<div class="replay__container" *ngIf="currentComment.replies.length>0">
+    <app-comment-shell *ngFor="let replay of currentComment.replies" [commentItem]="replay" [commentType]="commentingTypes.Replay"
+        ></app-comment-shell>
+</div>

@@ -1,0 +1,13 @@
+#main {
+  margin: 10rem auto;
+  max-width: 800px;
+}
+
+app-comment-list {
+  margin: 10rem auto;
+  max-width: 800px;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+ 
+}
