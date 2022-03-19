@@ -1,36 +1,77 @@
-.modal {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+.p-dialog {
   max-width: 40rem;
-  background-color: $color-white;
   padding: 5rem 4rem;
-  box-shadow: 0 4rem 6rem rgba(0, 0, 0, 0.3);
+  background-color: $color-white;
   border-radius: 1rem;
-  z-index: 1000;
-  transition: all 0.5s;
-  &__header {
+
+  & &-header {
+    font-family: $font-family-default;
     color: $color-primary--dark;
     margin-bottom: 1.5rem;
     font-size: 2.2rem;
+    font-weight: 700;
+    padding: 0;
   }
-  &__text {
+
+  & &-header &-title {
+    color: $color-primary--dark;
+    font-size: 2.2rem;
+  }
+
+  & &-header &-header-icon {
+    display: none;
+  }
+  &.p-confirm-dialog .p-confirm-dialog-message {
+    font-size: 1.6rem;
+    font-family: $font-family-default;
     color: $color-gray-blue;
     line-height: 1.5;
+    margin: 0;
   }
-  &__btn__container {
+
+  & &-content {
+    padding: 0;
+  }
+  & &-footer {
     margin-top: 2rem;
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 2rem;
+    padding: 0;
   }
-  &__btn {
-    &--cancel {
-      background-color: $color-gray-blue;
+
+  & &-footer button {
+    margin: 0;
+    &:focus {
+      box-shadow: none;
+      transform: scale(1.05);
     }
-    &--delete {
-      background-color: $color-red;
-    }
+  }
+}
+
+.p-button {
+  font-size: 1.3rem;
+  font-weight: 700;
+  font-family: Arial, Helvetica, sans-serif;
+  @extend .btn;
+
+  &.p-confirm-dialog-accept,
+  &.p-confirm-dialog-accept:enabled:hover,
+  &.p-confirm-dialog-accept:enabled:active {
+    background-color: $color-red;
+  }
+
+  &.p-confirm-dialog-reject,
+  &.p-confirm-dialog-reject:enabled:hover,
+  &.p-confirm-dialog-reject:enabled:active {
+    background-color: $color-gray-blue;
+  }
+  & &-label {
+    display: flex;
+    justify-content: center;
+  }
+
+  & &-icon-left {
+    display: none;
   }
 }

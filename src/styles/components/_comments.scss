@@ -8,7 +8,6 @@
 }
 ///! Raiting \\\
 .raiting {
-
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -43,6 +42,10 @@
       justify-content: space-between;
       padding-bottom: 1.2rem;
     }
+    &--bottom {
+      width: 98%;
+      height: 100%;
+    }
   }
 
   &__user {
@@ -72,15 +75,15 @@
 
   &__text {
     color: $color-gray-blue;
-    display: inline;
+    display: block;
+    word-break: break-word;
   }
-  &__replayTo {
+  &__replay {
     color: $color-primary;
     font-weight: 500;
   }
 
-
-  &__edit-box{
+  &__edit-box {
     border: 2px solid #eaecf1;
     border-radius: 10px;
     color: #67727e;

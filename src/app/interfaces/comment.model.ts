@@ -11,8 +11,17 @@ export interface User {
 export interface Comment {
   id: number;
   content: string;
-  createdAt: string;
+  createdAt: number;
+  replyingTo?: string;
   score: number;
   user: User;
   replies: any[];
+}
+export interface Replay {
+  id: number;
+  content: string;
+  createdAt: string;
+  replyingTo: string;
+  score: number;
+  user: User;
 }

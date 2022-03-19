@@ -8,22 +8,25 @@
         <div class="content__row content__row--top">
 
             <div class="content__user">
-                <img src="./assets/{{commentItem.user.image.webp.slice(1)}}" alt="amyrobson" class="content__user--img">
+                <img src="{{imagePath}}" alt="amyrobson" class="content__user--img">
                 <p class="content__user--username">{{commentItem.user.username}}</p>
 
                 <span class="content__user--badge" *ngIf="loggedInAsUsername==commentItem.user.username">you</span>
-                <p class="content__user--date">{{commentItem.createdAt}}</p>
+                <p class="content__user--date">{{commentDate}}</p>
             </div>
 
             <div class="tools">
+
                 <div class="tools__type tools__type--replay"
-                    *ngIf="loggedInAsUsername!==commentItem.user.username; else currentUserTrue">
+                    *ngIf="loggedInAsUsername!==commentItem.user.username; else currentUserTrue"
+                    (click)="replayToComment()">
                     <img src="assets/images/icon-reply.svg" alt="replay">
                     <p class="tool tool--replay">Replay</p>
                 </div>
+
                 <ng-template #currentUserTrue>
-                    <div class="tools__type tools__type--del " (click)="deleteComment()">
-                        <img src="assets/images/icon-delete.svg" alt="delete"  >
+                    <div class="tools__type tools__type--del " (click)="deleteCurrentComment()">
+                        <img src="assets/images/icon-delete.svg" alt="delete">
                         <p class="tool tool--delete">Delete</p>
                     </div>
 
@@ -31,28 +34,30 @@
                         <img src="assets/images/icon-edit.svg" alt="edit">
                         <p class="tool tool--btn">Edit</p>
                     </div>
-
-
-
-
                 </ng-template>
-
 
             </div>
         </div>
-        <!-- topRow ends here -->
+
         <div class="content__row content__row--bottom">
 
             <p class="content__text" *ngIf="!editing ; else commentEditor">
-                <span class="content__replay" *ngIf="commentType===commentingTypes.Replay">@undefined </span>
+                <span class="content__replay"
+                    *ngIf="commentType===commentingTypes.Replay">@{{commentItem.replyingTo}}</span>
                 {{commentItem.content}}
             </p>
+
             <ng-template #commentEditor>
-                <app-commenting-area-shell [commentingType]="commentingTypes.Edit" [userText]="commentItem.content"
-                    (onEditCancel)="cancelEdit($event)" (onDoneEdit)="UpdateComment($event)">
+                <app-commenting-area-shell [commentingType]="commentingTypes.Edit" [userText]="textForUpdate"
+                    (onCancelAction)="cancelEdit($event)" (onSubmitAction)="UpdateCommentContent($event)">
                 </app-commenting-area-shell>
             </ng-template>
         </div>
     </div>
 
 </div>
+
+
+<app-commenting-area-shell *ngIf="replaying" [commentingType]="commentingTypes.Replay"
+    (onCancelAction)="cancelReplay($event)" (onSubmitAction)="postReplay($event)">
+</app-commenting-area-shell>

@@ -21,7 +21,10 @@ export class CommentListComponent implements OnInit {
   currentUsername = this.commentService.getCurrentUser().username;
 
   ngOnInit(): void {
+  
+
     this.comments = this.commentService.commentsArr;
+    
     this.storageService.set(this.comments);
   }
 }

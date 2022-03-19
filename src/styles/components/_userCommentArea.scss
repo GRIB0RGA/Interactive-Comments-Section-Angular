@@ -2,8 +2,15 @@
   display: grid;
   gap: 1rem;
   margin-top: 2rem;
-  &--comment {
+
+  &--comment,
+  &--replay {
     grid-template-columns: min-content 1fr min-content;
+  }
+  &--replay {
+    padding: 3rem 3rem 2rem;
+    background-color: #fff;
+    border-radius: 0.8rem;
   }
   &--edit {
     display: flex;

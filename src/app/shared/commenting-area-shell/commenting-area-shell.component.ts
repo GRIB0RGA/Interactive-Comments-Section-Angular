@@ -2,6 +2,7 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { CommentingTypes, BtnTypes } from 'src/app/enums/commentEnums';
 import { User } from 'src/app/interfaces/comment.model';
 import { CommentService } from 'src/app/services/comment.service';
+import { ImageService } from 'src/app/services/image.service';
 
 @Component({
   selector: 'app-commenting-area-shell',
@@ -10,29 +11,35 @@ import { CommentService } from 'src/app/services/comment.service';
 })
 export class CommentingAreaShellComponent implements OnInit {
   @Input() commentingType!: string;
-  @Input() userText!: string;
-  @Output() onEditCancel = new EventEmitter<any>();
-  @Output() onDoneEdit = new EventEmitter<any>();
+  @Input() userText!: any;
+  @Input() currentComment!: any;
 
-  commentingTypes = CommentingTypes;
-
-  btnType!: string;
-  imagePath!: string;
-
-  descriptionText!: string;
+  @Output() onCancelAction = new EventEmitter<any>();
+  @Output() onSubmitAction = new EventEmitter<any>();
 
   currentUserObj: User;
 
-  constructor(private commentService: CommentService) {
+  btnType!: string;
+  imagePath!: string;
+  descriptionText!: string;
+
+  commentingTypes = CommentingTypes;
+
+  constructor(
+    private commentService: CommentService,
+    private imageService: ImageService
+  ) {
     this.currentUserObj = commentService.getCurrentUser();
   }
 
   ngOnInit(): void {
     this.btnType = this.getBtnType();
-    this.imagePath = this.getUserImage();
-
+    this.imagePath = this.imageService.getCurrentUserImagePath(
+      this.currentUserObj
+    );
+    //prettier-ignore
     this.descriptionText =
-      this.commentingType === CommentingTypes.Edit ? this.userText : '';
+      this.commentingType === CommentingTypes.Edit ? this.generateTextForEdit() : '';
   }
 
   getBtnType() {
@@ -43,24 +50,40 @@ export class CommentingAreaShellComponent implements OnInit {
       : BtnTypes.Edit;
   }
 
-  getUserImage() {
-    return ` ./assets${this.currentUserObj.image.webp.slice(1)}`;
+  //! BUTTON SUBMIT ACTION \\\
+
+  submitAction(type: string) {
+    if (type === CommentingTypes.Comment) {
+      this.commentService.postComment(
+        this.descriptionText,
+        this.currentUserObj.username,
+        this.currentUserObj.image.webp
+      );
+      this.descriptionText = '';
+    }
+    if (type === CommentingTypes.Edit) {
+      //? Get rid of @username and send \\\
+      const removeReplayTo = this.descriptionText
+        .split(' ')
+        .filter((word) => word !== `@${this.userText.replayToUsername}`)
+        .join(' ');
+
+      this.onSubmitAction.emit(removeReplayTo);
+    }
+    if (type === CommentingTypes.Replay) {
+      this.onSubmitAction.emit(this.descriptionText);
+    }
   }
 
-  cancelEditing() {
-    this.onEditCancel.emit(false);
-  }
-  UpdateDescription() {
-    this.onDoneEdit.emit(this.userText);
+  //! BUTTON CANCEL ACTION \\\
+
+  cancelAction() {
+    this.onCancelAction.emit(false);
   }
 
-  postComment() {
-    this.commentService.postComment(
-      5,
-      this.userText,
-      Date.now(),
-      this.currentUserObj.username,
-      this.currentUserObj.image.webp
-    );
+  generateTextForEdit() {
+    return this.userText.replayToUsername
+      ? `@${this.userText.replayToUsername} ${this.userText.content}`
+      : `${this.userText.content}`;
   }
 }

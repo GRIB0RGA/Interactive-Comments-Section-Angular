@@ -8,6 +8,11 @@ import { CommentListComponent } from './components/comment-list/comment-list.com
 import { CommentItemComponent } from './components/comment-list/comment-item/comment-item.component';
 import { CommentingAreaShellComponent } from './shared/commenting-area-shell/commenting-area-shell.component';
 
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { ConfirmationService } from 'primeng/api';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -16,8 +21,16 @@ import { CommentingAreaShellComponent } from './shared/commenting-area-shell/com
     CommentItemComponent,
     CommentingAreaShellComponent,
   ],
-  imports: [BrowserModule, AppRoutingModule, FormsModule],
-  providers: [],
+  imports: [
+    BrowserModule,
+    AppRoutingModule,
+    FormsModule,
+    ConfirmDialogModule,
+    BrowserAnimationsModule,
+  ],
+  providers: [ConfirmationService],
   bootstrap: [AppComponent],
 })
 export class AppModule {}
+
+// ConfirmDialogModule, ConfirmationService;
