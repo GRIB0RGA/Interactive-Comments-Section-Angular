@@ -2,6 +2,11 @@ export enum ScoreBtnType {
   Plus = '+',
   Minus = '-',
 }
+export enum VoteStatus {
+  Upvoted = 1,
+  Neutral = 0,
+  DownVoted = -1,
+}
 
 export enum CommentingTypes {
   Comment = 'comment',

@@ -1,5 +1,6 @@
-<app-comment-item *ngFor="let comment of comments" [currentComment]="comment" >
-</app-comment-item>
+<div class="comments__container">
+    <app-comment-item *ngFor="let comment of comments" [currentComment]="comment">
+    </app-comment-item>
+</div>
 
-
-<app-commenting-area-shell  [commentingType]="commentingTypes.Comment"></app-commenting-area-shell>
+<app-commenting-area-shell [commentingType]="commentingTypes.Comment"></app-commenting-area-shell>

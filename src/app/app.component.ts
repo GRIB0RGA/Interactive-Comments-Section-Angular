@@ -1,7 +1,4 @@
 import { Component } from '@angular/core';
-import { ConfirmationService } from 'primeng/api';
-
-import { CommentService } from './services/comment.service';
 
 @Component({
   selector: 'app-root',
@@ -11,10 +8,7 @@ import { CommentService } from './services/comment.service';
 export class AppComponent {
   title = 'Interactive-Comments-Section-Angular';
 
-  constructor(
-    private commentService: CommentService,
-    private confirmationService: ConfirmationService
-  ) {}
+  constructor() {}
 
   ngOnInit(): void {}
 }

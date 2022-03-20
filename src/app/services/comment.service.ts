@@ -10,10 +10,15 @@ export class CommentService {
   constructor(private storageService: StorageService) {}
 
   //! Starting Functions Start \\\
+
+  STORAGE_KEY = `comments`;
+  ID_KEY = 'idKey';
   commentsArr =
-    this.storageService.get() === null
+    this.storageService.get(this.STORAGE_KEY) === null
       ? data.comments
-      : this.storageService.get();
+      : this.storageService.get(this.STORAGE_KEY);
+
+  maxID = this.getMaxId(this.commentsArr);
 
   getCurrentUser(): User {
     return data.currentUser;
@@ -24,7 +29,9 @@ export class CommentService {
   //prettier-ignore
   postComment(contentText: string,username: string,image: string):void {
     const newComment: Comment = {
-      id: this.getMaxId(this.commentsArr) + 1,
+      id: this.getMaxIdFromStorage() + 1,
+      animationStatus: true,
+      scoreStatus: 0,
       content: contentText,
       createdAt: Date.now(),
       score: 0,
@@ -38,13 +45,16 @@ export class CommentService {
     };
 
     this.commentsArr.push(newComment);
-    this.storageService.set(this.commentsArr);
+    this.storageService.set(this.STORAGE_KEY,this.commentsArr);
+    this.storageService.set(this.ID_KEY, this.getMaxIdFromStorage() + 1);
   }
 
   //! DELETE \\\
   deleteComment(id: number): void {
     //prettier-ignore
-    const filteredComments = this.commentsArr.find((comment: any) => comment.id === id);
+    const filteredComments = this.commentsArr.find(
+      (comment: Comment) => comment.id === id
+    );
 
     //? Delete from comments
     if (filteredComments) {
@@ -52,7 +62,7 @@ export class CommentService {
     }
 
     //? Delete from replays
-    this.commentsArr.forEach((comment: any) => {
+    this.commentsArr.forEach((comment: Comment) => {
       //prettier-ignore
       const filteredReplays = comment.replies.filter((replay: any) => replay.id !== id);
       if (comment.replies.length > filteredReplays.length) {
@@ -60,23 +70,25 @@ export class CommentService {
       }
     });
 
-    this.storageService.set(this.commentsArr);
+    this.storageService.set(this.STORAGE_KEY, this.commentsArr);
   }
 
   //! UPDATE/EDIT \\\
 
   updateComment(id: number, content: string): void {
     this.findWithId(id, this.commentsArr).content = content;
-    this.storageService.set(this.commentsArr);
+    this.storageService.set(this.STORAGE_KEY, this.commentsArr);
   }
 
   //! Replay \\\
 
   postReplay(id: number, replayToUsername: string, contentText: string): void {
     const replayToPush: Replay = {
-      id: this.getMaxId(this.commentsArr) + 1,
+      id: this.getMaxIdFromStorage() + 1,
+      animationStatus: true,
+      scoreStatus: 0,
       content: contentText,
-      createdAt: `dges`,
+      createdAt: Date.now(),
       score: 0,
       replyingTo: replayToUsername,
       user: {
@@ -101,14 +113,23 @@ export class CommentService {
       });
     }
 
-    this.storageService.set(this.commentsArr);
+    this.storageService.set(this.STORAGE_KEY, this.commentsArr);
+    this.storageService.set(this.ID_KEY, this.getMaxIdFromStorage() + 1);
   }
 
   //! SCORE \\\
 
   updateScore(id: number, score: number): void {
     this.findWithId(id, this.commentsArr).score = score;
-    this.storageService.set(this.commentsArr);
+    this.sortByScore();
+    this.storageService.set(this.STORAGE_KEY, this.commentsArr);
+  }
+
+  sortByScore(): void {
+    this.commentsArr.sort((a: any, b: any) => b.score - a.score);
+    this.commentsArr.forEach((comment: any) =>
+      comment.replies.sort((a: any, b: any) => b.score - a.score)
+    );
   }
 
   //? HELPERS \\
@@ -117,30 +138,36 @@ export class CommentService {
   getMaxId(comArr: any): number {
     let maxId = 0;
     comArr.forEach((comment: any): any => {
-      if (comment.id > maxId) {
-        maxId = comment.id;
-      }
       if (comment.replies?.length > 0) {
         maxId = this.getMaxId(comment.replies);
+      }
+      if (comment.id > maxId) {
+        maxId = comment.id;
       }
     });
 
     return maxId;
   }
 
-  findWithId(id: number, arr?: any): Comment {
-    let currentObject!: Comment;
-    //? check if any of the comments has that id
-    for (let comment of arr) {
-      if (comment.id === id) {
-        currentObject = comment;
-        break;
-      }
-      //? check if any of the replays has that id
-      if (comment.replies?.length > 0) {
-        currentObject = this.findWithId(id, comment.replies);
+  getMaxIdFromStorage(): number {
+    return this.storageService.get(this.ID_KEY) as number;
+  }
+
+  findWithId(id: number, arr: any): Comment {
+    const level1 = arr.find((comment: any) => comment.id === id);
+
+    if (!level1) {
+      let level2;
+      arr.forEach((comment: any) =>
+        comment.replies.find((replay: any) => {
+          if (replay.id === id) level2 = replay;
+        })
+      );
+      if (level2) {
+        return level2;
       }
     }
-    return currentObject;
+
+    return level1;
   }
 }

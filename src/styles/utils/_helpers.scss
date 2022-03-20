@@ -1,6 +1,16 @@
 .hidden {
   display: none !important;
 }
-.shake {
+.shake-Textarea {
   animation: shake 0.5s;
+  border: 1px solid $color-red !important;
+}
+.slideUp {
+  animation: slideInFromBottom 1s;
+}
+
+.button-Upvoted-Class {
+  color: $color-primary !important;
+  font-size: 2rem !important;
+  font-weight: 700;
 }

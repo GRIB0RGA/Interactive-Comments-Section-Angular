@@ -2,8 +2,8 @@
 
     <img class="commenting-area__img" src="{{imagePath}}" alt="userImage"
         *ngIf="commentingType!==commentingTypes.Edit" />
-    <textarea class="commenting-area__commenting-box" placeholder="Add a comment..." (keyup.escape)="cancelAction()"
-        (keyup.enter)="submitAction(commentingType)" [(ngModel)]="descriptionText"></textarea>
+    <textarea class="commenting-area__commenting-box" placeholder="Add a comment..." [ngClass]="{'shake-Textarea': shaking}"
+        (keyup.escape)="cancelAction()" (keyup.enter)="submitAction(commentingType)"
+        [(ngModel)]="descriptionText"></textarea>
     <button class="commenting-area__btn btn" (click)="submitAction(commentingType)">{{btnType}}</button>
 </div>
-

@@ -1,9 +1,13 @@
-<div class="comment ">
+<div class="comment" [ngClass]="{'slideUp':commentItem.animationStatus}">
+
     <div class="raiting">
-        <button class="raiting__operator raiting__operator--like" (click)="updateScore(btnType.Plus)">+</button>
+        <button class="raiting__operator raiting__operator--like" [ngClass]="getVoteStyle(btnType.Plus)"
+            (click)="updateScore(btnType.Plus)">+</button>
         <span class="raiting--score">{{commentItem.score}}</span>
-        <button class="raiting__operator raiting__operator--dislike" (click)="updateScore(btnType.Minus)">-</button>
+        <button class="raiting__operator raiting__operator--dislike" [ngClass]="getVoteStyle(btnType.Minus)"
+            (click)="updateScore(btnType.Minus)">-</button>
     </div>
+
     <div class="comment__content">
         <div class="content__row content__row--top">
 
@@ -17,23 +21,23 @@
 
             <div class="tools">
 
-                <div class="tools__type tools__type--replay"
+                <button class="tools__type tools__type--replay"
                     *ngIf="loggedInAsUsername!==commentItem.user.username; else currentUserTrue"
                     (click)="replayToComment()">
                     <img src="assets/images/icon-reply.svg" alt="replay">
                     <p class="tool tool--replay">Replay</p>
-                </div>
+                </button>
 
                 <ng-template #currentUserTrue>
-                    <div class="tools__type tools__type--del " (click)="deleteCurrentComment()">
+                    <button class="tools__type tools__type--del " (click)="deleteCurrentComment()">
                         <img src="assets/images/icon-delete.svg" alt="delete">
                         <p class="tool tool--delete">Delete</p>
-                    </div>
+                    </button>
 
-                    <div class="tools__type tools__type--edit " (click)="editComment()">
+                    <button class="tools__type tools__type--edit " (click)="editComment()">
                         <img src="assets/images/icon-edit.svg" alt="edit">
                         <p class="tool tool--btn">Edit</p>
-                    </div>
+                    </button>
                 </ng-template>
 
             </div>
@@ -53,11 +57,11 @@
                 </app-commenting-area-shell>
             </ng-template>
         </div>
-    </div>
 
+    </div>
 </div>
 
 
-<app-commenting-area-shell *ngIf="replaying" [commentingType]="commentingTypes.Replay"
+<app-commenting-area-shell *ngIf="replaying" [commentingType]="commentingTypes.Replay" [userText]="textForUpdate"
     (onCancelAction)="cancelReplay($event)" (onSubmitAction)="postReplay($event)">
 </app-commenting-area-shell>

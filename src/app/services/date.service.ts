@@ -6,7 +6,7 @@ import { Injectable } from '@angular/core';
 export class DateService {
   constructor() {}
 
-  getCommentDate(commentDate: number) {
+  getCommentDate(commentDate: number): string {
     let createdDate = Date.now();
     const date = new Date(createdDate);
 

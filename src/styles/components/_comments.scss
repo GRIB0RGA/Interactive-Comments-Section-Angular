@@ -22,11 +22,16 @@
   background-color: $color-background;
   &__operator {
     color: $color-gray-blue-light;
+
     cursor: pointer;
     padding: 0.8rem;
     border: none;
     background-color: transparent;
     font-size: 1.8rem;
+    &:hover {
+      color: $color-primary;
+      transform: scale(1.15);
+    }
   }
   &--score {
     color: $color-primary;
@@ -41,10 +46,6 @@
       display: flex;
       justify-content: space-between;
       padding-bottom: 1.2rem;
-    }
-    &--bottom {
-      width: 98%;
-      height: 100%;
     }
   }
 
@@ -107,6 +108,8 @@
     display: flex;
     justify-items: center;
     align-items: center;
+    background-color: transparent;
+    border: none;
     gap: 0.5rem;
     font-weight: 500;
     transition: 0.2s;

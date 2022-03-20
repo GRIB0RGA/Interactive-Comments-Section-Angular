@@ -4,16 +4,15 @@ import { Injectable } from '@angular/core';
   providedIn: 'root',
 })
 export class StorageService {
-  STORAGE_KEY: string = `comments`;
-  get<T>(): T | null {
-    const storageObj = localStorage.getItem(this.STORAGE_KEY);
+  get<T>(key: string): T | null {
+    const storageObj = localStorage.getItem(key);
     if (storageObj) {
       return JSON.parse(storageObj);
     }
     return null;
   }
 
-  set<T>(data: T) {
-    localStorage.setItem(this.STORAGE_KEY, JSON.stringify(data));
+  set<T>(key: string, data: T) {
+    localStorage.setItem(key, JSON.stringify(data));
   }
 }

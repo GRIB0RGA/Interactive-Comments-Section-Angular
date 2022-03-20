@@ -24,6 +24,7 @@ export class CommentingAreaShellComponent implements OnInit {
   descriptionText!: string;
 
   commentingTypes = CommentingTypes;
+  shaking = false;
 
   constructor(
     private commentService: CommentService,
@@ -38,11 +39,10 @@ export class CommentingAreaShellComponent implements OnInit {
       this.currentUserObj
     );
     //prettier-ignore
-    this.descriptionText =
-      this.commentingType === CommentingTypes.Edit ? this.generateTextForEdit() : '';
+    this.descriptionText = this.generateTextForEdit(this.commentingType);
   }
 
-  getBtnType() {
+  getBtnType(): string {
     return this.commentingType === CommentingTypes.Comment
       ? BtnTypes.Comment
       : this.commentingType === CommentingTypes.Replay
@@ -52,38 +52,64 @@ export class CommentingAreaShellComponent implements OnInit {
 
   //! BUTTON SUBMIT ACTION \\\
 
-  submitAction(type: string) {
-    if (type === CommentingTypes.Comment) {
+  submitAction(type: string): void {
+    //prettier-ignore
+
+    //? COMMENT
+    if (type === CommentingTypes.Comment && this.descriptionText.trim().length>0) {
       this.commentService.postComment(
         this.descriptionText,
         this.currentUserObj.username,
         this.currentUserObj.image.webp
       );
       this.descriptionText = '';
+      this.onSubmitAction.emit(this.descriptionText);
+    } else {
+      this.shaking = true;
+      setTimeout(() => {
+        this.shaking = false;
+      }, 1500);
     }
+    //? EDIT
     if (type === CommentingTypes.Edit) {
+      console.log(123);
+
       //? Get rid of @username and send \\\
       const removeReplayTo = this.descriptionText
         .split(' ')
-        .filter((word) => word !== `@${this.userText.replayToUsername}`)
+        .filter((word) => word !== `@${this.userText.replayingTo}`)
         .join(' ');
 
       this.onSubmitAction.emit(removeReplayTo);
     }
+
+    //? REPLAY
     if (type === CommentingTypes.Replay) {
-      this.onSubmitAction.emit(this.descriptionText);
+      const removeReplayTo = this.descriptionText
+        .split(' ')
+        .filter((word) => word !== `@${this.userText.replayUsername}`)
+        .join(' ');
+
+      this.onSubmitAction.emit(removeReplayTo);
     }
   }
 
   //! BUTTON CANCEL ACTION \\\
 
-  cancelAction() {
+  cancelAction(): void {
     this.onCancelAction.emit(false);
   }
 
-  generateTextForEdit() {
-    return this.userText.replayToUsername
-      ? `@${this.userText.replayToUsername} ${this.userText.content}`
-      : `${this.userText.content}`;
+  //! Other Functions \\\
+  generateTextForEdit(type: string): string {
+    if (type === CommentingTypes.Edit) {
+      return this.userText.replayingTo
+        ? `@${this.userText.replayingTo} ${this.userText.content} `
+        : `${this.userText.content} `;
+    } else if (type === CommentingTypes.Replay) {
+      return `@${this.userText.replayUsername} `;
+    } else {
+      return '';
+    }
   }
 }

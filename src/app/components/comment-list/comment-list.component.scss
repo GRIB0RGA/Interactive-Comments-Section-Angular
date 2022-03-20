@@ -2,13 +2,18 @@ app-comment-item {
   display: flex;
   flex-direction: column;
   gap: 2rem;
-  &:nth-last-child(2) {
-    margin-bottom: 3rem;
-  }
 }
 
 app-commenting-area-shell {
   background-color: #fff;
   padding: 1rem 2rem 2rem;
   border-radius: 0.8rem;
+}
+
+.comments__container {
+  // max-height: 60rem;
+  // overflow-y: scroll;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
 }

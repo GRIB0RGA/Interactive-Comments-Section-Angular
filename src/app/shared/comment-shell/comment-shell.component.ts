@@ -1,8 +1,16 @@
 import { Component, Input, OnInit, Output } from '@angular/core';
 import { ConfirmationService } from 'primeng/api';
-import { CommentingTypes, ScoreBtnType } from 'src/app/enums/commentEnums';
+import {
+  CommentingTypes,
+  ScoreBtnType,
+  VoteStatus,
+} from 'src/app/enums/commentEnums';
 
-import { Comment } from 'src/app/interfaces/comment.model';
+import {
+  Comment,
+  UpdateText,
+  VoteStyle,
+} from 'src/app/interfaces/comment.model';
 
 import { CommentService } from 'src/app/services/comment.service';
 import { DateService } from 'src/app/services/date.service';
@@ -30,10 +38,9 @@ export class CommentShellComponent implements OnInit {
   imagePath!: string;
 
   //! OTHERS \\\
-  modal!: any;
-  loggedInAsUsername: string;
 
-  textForUpdate!: object;
+  loggedInAsUsername: string;
+  textForUpdate!: UpdateText;
 
   constructor(
     private commentService: CommentService,
@@ -51,10 +58,7 @@ export class CommentShellComponent implements OnInit {
     this.commentDate = this.dateService.getCommentDate(this.commentItem.createdAt);
     //prettier-ignore
     this.imagePath = this.imageService.getCurrentUserImagePath(this.commentItem.user);
-    this.textForUpdate = {
-      content: this.commentItem.content,
-      replayToUsername: this.commentItem.replyingTo,
-    };
+    this.textForUpdate = this.updateTextForInputObject();
   }
 
   //? FUNCTIONS \\\
@@ -63,11 +67,15 @@ export class CommentShellComponent implements OnInit {
 
   //! Update \\\
 
-  updateScore(type: string) {
-    if (type === ScoreBtnType.Plus) {
+  updateScore(type: string): void {
+    if (type === ScoreBtnType.Plus && this.commentItem.scoreStatus !== 1) {
       this.commentItem.score++;
-    } else if (this.commentItem.score > 0) {
+      this.commentItem.scoreStatus++;
+    }
+    //prettier-ignore
+    if (type === ScoreBtnType.Minus && this.commentItem.score > 0 && this.commentItem.scoreStatus !== -1) {
       this.commentItem.score--;
+      this.commentItem.scoreStatus --;
     }
 
     this.commentService.updateScore(
@@ -76,17 +84,36 @@ export class CommentShellComponent implements OnInit {
     );
   }
 
+  getVoteStyle(type: string): VoteStyle {
+    if (type === ScoreBtnType.Plus) {
+      return {
+        'button-Upvoted-Class':
+          this.commentItem.scoreStatus === VoteStatus.Upvoted,
+      };
+    }
+    if (type === ScoreBtnType.Minus) {
+      return {
+        'button-Upvoted-Class':
+          this.commentItem.scoreStatus === VoteStatus.DownVoted,
+      };
+    }
+
+    return {
+      'button-Upvoted-Class': false,
+    };
+  }
+
   //! Edit \\\
 
-  editComment() {
+  editComment(): void {
     this.editing = true;
   }
 
-  cancelEdit(canceled: any) {
+  cancelEdit(canceled: boolean): void {
     this.editing = canceled;
   }
 
-  UpdateCommentContent(content: string) {
+  UpdateCommentContent(content: string): void {
     if (content.trim().length > 0) {
       this.commentItem.content = content;
 
@@ -94,34 +121,35 @@ export class CommentShellComponent implements OnInit {
         this.commentItem.id,
         this.commentItem.content
       );
-    } else {
-      this.editing = false;
+      this.textForUpdate.content = content;
     }
     this.editing = false;
   }
 
   //! Replay \\\
 
-  replayToComment() {
+  replayToComment(): void {
     this.replaying = true;
   }
 
-  cancelReplay(canceled: boolean) {
+  cancelReplay(canceled: boolean): void {
     this.replaying = canceled;
   }
 
-  postReplay(description: string) {
-    this.commentService.postReplay(
-      this.commentItem.id,
-      this.commentItem.user.username,
-      description
-    );
+  postReplay(description: string): void {
+    if (description.trim().length > 0) {
+      this.commentService.postReplay(
+        this.commentItem.id,
+        this.commentItem.user.username,
+        description
+      );
+    }
     this.replaying = false;
   }
 
   //! Delete \\\
 
-  deleteCurrentComment() {
+  deleteCurrentComment(): void {
     this.confirmationService.confirm({
       message:
         "Are you sure you want to delete this comment?  This will remove the  comment and and can't be undone",
@@ -135,5 +163,13 @@ export class CommentShellComponent implements OnInit {
     });
   }
 
-  //! Helpers \\\
+  //! Other Functions \\\
+
+  updateTextForInputObject(): UpdateText {
+    return {
+      content: this.commentItem.content,
+      replayingTo: this.commentItem.replyingTo,
+      replayUsername: this.commentItem.user.username,
+    };
+  }
 }

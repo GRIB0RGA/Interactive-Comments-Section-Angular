@@ -44,7 +44,8 @@
     margin: 0;
     &:focus {
       box-shadow: none;
-      transform: scale(1.05);
+      transform: scale(1);
+      animation: heartbeat 1s infinite;
     }
   }
 }

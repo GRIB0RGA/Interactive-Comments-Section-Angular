@@ -10,6 +10,8 @@ export interface User {
 
 export interface Comment {
   id: number;
+  animationStatus: boolean;
+  scoreStatus: number;
   content: string;
   createdAt: number;
   replyingTo?: string;
@@ -19,9 +21,21 @@ export interface Comment {
 }
 export interface Replay {
   id: number;
+  animationStatus: boolean;
+  scoreStatus: number;
   content: string;
-  createdAt: string;
+  createdAt: number;
   replyingTo: string;
   score: number;
   user: User;
+}
+
+export interface UpdateText {
+  content: string;
+  replayingTo?: string;
+  replayUsername?: string;
+}
+
+export interface VoteStyle {
+  'button-Upvoted-Class': boolean;
 }
